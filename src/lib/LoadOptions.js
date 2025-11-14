@@ -75,15 +75,15 @@ export default class LoadOptions {
         let queryString;
         if (bounds.areaId) {
           queryString = `[timeout:${this.timeout}][maxsize:${this.maxHeapByteSize}][out:json];
-area(${bounds.areaId});
-(._; )->.area;
-(${this.wayFilter}(area.area); node(w););
-out ${this.outputMethod};`;
+          area(${bounds.areaId});
+          (._; )->.area;
+          (${this.wayFilter}(area.area); node(w););
+          out ${this.outputMethod};`;
         } else if (bounds.bbox) {
           let bbox = serializeBBox(bounds.bbox);
           queryString = `[timeout:${this.timeout}][maxsize:${this.maxHeapByteSize}][bbox:${bbox}][out:json];
-(${this.wayFilter}; node(w););
-out ${this.outputMethod};`;
+          (${this.wayFilter}; node(w););
+          out ${this.outputMethod};`;
         }
 
         return {
