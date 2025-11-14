@@ -7,15 +7,15 @@
     <div class="settings-header">Settings</div>
     <form class="settings-form" @submit.prevent>
       <label>
-        <input type="radio" name="wayFilter" value="all" v-model="selectedFilterKey">
+        <input type="radio" name="wayFilter" value="all" class="settings-radio" v-model="selectedFilterKey">
         All roads
       </label>
       <label>
-        <input type="radio" name="wayFilter" value="main" v-model="selectedFilterKey">
+        <input type="radio" name="wayFilter" value="main" class="settings-radio" v-model="selectedFilterKey">
         Main roads
       </label>
       <label>
-        <input type="radio" name="wayFilter" value="buildings" v-model="selectedFilterKey">
+        <input type="radio" name="wayFilter" value="buildings" class="settings-radio" v-model="selectedFilterKey">
         Buildings
       </label>
     </form>
@@ -440,7 +440,7 @@ input {
   color: highlight-color;
 }
 .settings-icon {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -451,7 +451,7 @@ input {
   background: white;
   padding: 8px;
   border-radius: 4px;
-  min-width: 160px;
+  min-width: 130px;
   z-index: 10;
 }
 .settings-popover .settings-header {
@@ -459,20 +459,12 @@ input {
   margin-bottom: 6px;
   font-size: 13px;
 }
-.settings-form {
+form{
   display: flex;
+}
+.settings-form {
   flex-direction: column;
 }
-.settings-form label {
-  font-size: 13px;
-  margin: 4px 0;
-  display: flex;
-  align-items: center;
-}
-.settings-form input[type="radio"] {
-  margin-right: 8px;
-}
-
 .prompt {
   padding: 4px;
   text-align: center;
