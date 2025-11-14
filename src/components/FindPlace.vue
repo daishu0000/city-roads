@@ -1,9 +1,10 @@
 <template>
 <div class='find-place' :class='{centered: boxInTheMiddle }'>
-  <button class="settings-btn" title="Settings" aria-label="Settings" type="button" @click="toggleSettings">
-    <span class="settings-icon">⚙</span>
-  </button>
-  <div v-if="settingsVisible" class="settings-popover shadow">
+  <div class="settings" v-click-outside="onClickOutsideSettings">
+    <button class="settings-btn" title="Settings" aria-label="Settings" type="button" @click="toggleSettings">
+      <span class="settings-icon">⚙</span>
+    </button>
+    <div v-if="settingsVisible" class="settings-popover shadow">
     <div class="settings-header">Settings</div>
     <form class="settings-form" @submit.prevent>
       <label>
@@ -19,6 +20,7 @@
         Buildings
       </label>
     </form>
+  </div>
   </div>
   <div v-if='boxInTheMiddle'>
     <h3 class='site-header'>city roads</h3>
@@ -90,6 +92,7 @@ import Progress from '../lib/Progress.js'
 import LoadOptions from '../lib/LoadOptions.js';
 import Pbf from 'pbf';
 import {place} from '../proto/place.js';
+import clickOutside from './clickOutside.js';
 
 const FIND_TEXT = 'Find City Bounds';
 
@@ -97,6 +100,9 @@ export default {
   name: 'FindPlace',
   components: {
     LoadingIcon
+  },
+  directives: {
+    clickOutside
   },
   data () {
     const enteredInput = appState.get('q') || '';
@@ -144,6 +150,10 @@ export default {
   methods: {
     toggleSettings() {
       this.settingsVisible = !this.settingsVisible;
+    },
+
+    onClickOutsideSettings() {
+      this.settingsVisible = false;
     },
 
     // Return the actual Query.* string based on selected key
