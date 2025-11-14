@@ -1,5 +1,25 @@
 <template>
 <div class='find-place' :class='{centered: boxInTheMiddle }'>
+  <button class="settings-btn" title="Settings" aria-label="Settings" type="button" @click="toggleSettings">
+    <span class="settings-icon">⚙</span>
+  </button>
+  <div v-if="settingsVisible" class="settings-popover shadow">
+    <div class="settings-header">Settings</div>
+    <form class="settings-form" @submit.prevent>
+      <label>
+        <input type="radio" name="wayFilter" value="all" v-model="selectedFilterKey">
+        All roads
+      </label>
+      <label>
+        <input type="radio" name="wayFilter" value="main" v-model="selectedFilterKey">
+        Main roads
+      </label>
+      <label>
+        <input type="radio" name="wayFilter" value="buildings" v-model="selectedFilterKey">
+        Buildings
+      </label>
+    </form>
+  </div>
   <div v-if='boxInTheMiddle'>
     <h3 class='site-header'>city roads</h3>
     <p class='description'>This website renders every single road within a city</p>
@@ -96,6 +116,10 @@ export default {
       showWarning: hasValidArea, 
       mainActionText: hasValidArea ? 'Download Area' : FIND_TEXT,
       suggestions: []
+      ,
+      settingsVisible: false,
+      // possible values: 'all' | 'main' | 'buildings'
+      selectedFilterKey: 'all'
     }
   },
   watch: {
@@ -118,6 +142,17 @@ export default {
     clearInterval(this.notifyStillLoading);
   },
   methods: {
+    toggleSettings() {
+      this.settingsVisible = !this.settingsVisible;
+    },
+
+    // Return the actual Query.* string based on selected key
+    getSelectedWayFilter() {
+      if (this.selectedFilterKey === 'main') return Query.RoadMain;
+      if (this.selectedFilterKey === 'buildings') return Query.Building;
+      return Query.Road;
+    },
+
     onSubmit() {
       queryState.set('q', this.enteredInput);
       this.cancelRequest()
@@ -125,6 +160,8 @@ export default {
       this.noRoads = false;
       this.error = false;
       this.showWarning = false;
+      
+      this.settingsVisible = false;
 
       const restoredState = restoreStateFromQueryString(this.enteredInput);
       if (restoredState) {
@@ -233,7 +270,7 @@ export default {
       // it may take a while to load data. 
       this.restartLoadingMonitor();
       Query.runFromOptions(new LoadOptions({
-        wayFilter: Query.Road,
+        wayFilter: this.getSelectedWayFilter(),
         areaId: suggestion.areaId,
         bbox: suggestion.bbox
       }), this.generateNewProgressToken())
@@ -381,6 +418,59 @@ input {
     align-items: center;
     flex-shrink: 0;
   }
+}
+
+.settings-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 4px;
+  color: #666;
+  z-index: 3;
+}
+.settings-btn:hover {
+  background: rgba(0,0,0,0.05);
+  color: highlight-color;
+}
+.settings-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.settings-popover {
+  position: absolute;
+  right: 8px;
+  top: 50px;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  min-width: 160px;
+  z-index: 10;
+}
+.settings-popover .settings-header {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.settings-form {
+  display: flex;
+  flex-direction: column;
+}
+.settings-form label {
+  font-size: 13px;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+}
+.settings-form input[type="radio"] {
+  margin-right: 8px;
 }
 
 .prompt {

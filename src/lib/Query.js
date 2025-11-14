@@ -21,7 +21,7 @@ export default class Query {
   /**
    * Reduced set of roads
    */
-  static RoadBasic = 'way[highway~"^(motorway|primary|secondary|tertiary)|residential"]';
+  static RoadMain = 'way[highway~"^(motorway|primary|secondary|tertiary)"]';
 
   /**
    * More accurate representation of the roads by @RicoElectrico.
