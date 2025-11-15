@@ -78,8 +78,8 @@
   </div>
   <div class="local-file">
     <label class="upload-btn">
-      选择文件
-      <input type="file" @change="onFileChange" />
+      Select Local File
+      <input type="file" @change="onFileChange" accept=".json,.osm,.xml" />
     </label>
   </div>
 </div>
