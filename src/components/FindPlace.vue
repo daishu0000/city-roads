@@ -76,6 +76,12 @@
       Sorry it takes so long!
     </div>
   </div>
+  <div class="local-file">
+    <label class="upload-btn">
+      选择文件
+      <input type="file" @change="onFileChange" />
+    </label>
+  </div>
 </div>
 </template>
 
@@ -327,6 +333,23 @@ export default {
 
       this.progressToken = new Progress(this.updateProgress);
       return this.progressToken;
+    },
+    onFileChange(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = () => {
+        const content = reader.result;
+        const json = JSON.parse(content);
+
+        const grid = Grid.fromOSMResponse(json.elements);
+        grid.setName(file.name);
+        grid.setId(0);
+        grid.setIsArea(false);
+        grid.setBBox(serializeBBox(null));
+
+        this.$emit('loaded', grid);
+      };
     }
   }
 }
@@ -601,5 +624,23 @@ form{
     }
   }
 }
+
+input[type="file"] {
+  display: none; /* 隐藏真实 file input */
+}
+
+.upload-btn {
+  padding: 8px 16px;
+  background: white;
+  color: #ff4081;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid gray;
+}
+
+.local-file{
+  margin-top: 16px;
+}
+
 
 </style>
