@@ -340,8 +340,15 @@ export default {
       reader.readAsText(file);
       reader.onload = () => {
         const content = reader.result;
-        const json = JSON.parse(content);
+        let json;
 
+        const isXML = file.name.endsWith('.osm') || file.name.endsWith('.xml');
+
+        if (isXML) {
+          json = parseOSMXML(content);
+        } else {
+          json = JSON.parse(content);
+        }
         const grid = Grid.fromOSMResponse(json.elements);
         grid.setName(file.name);
         grid.setId(0);
@@ -402,6 +409,71 @@ function parseBBox(bboxStr) {
 
   let bbox = bboxStr.split(',').map(x => Number.parseFloat(x)).filter(x => Number.isFinite(x));
   return bbox.length === 4 ? bbox : null;
+}
+
+function parseOSMXML(xmlString) {
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlString, "application/xml");
+
+  const elements = [];
+
+  // 处理 <node>
+  xml.querySelectorAll('node').forEach(n => {
+    const tags = [...n.querySelectorAll('tag')].map(t => ({
+      k: t.getAttribute('k'),
+      v: t.getAttribute('v')
+    }));
+
+    elements.push({
+      type: 'node',
+      id: Number(n.getAttribute('id')),
+      lat: Number(n.getAttribute('lat')),
+      lon: Number(n.getAttribute('lon')),
+      tags
+    });
+  });
+
+  // 处理 <way>
+  xml.querySelectorAll('way').forEach(w => {
+    const nds = [...w.querySelectorAll('nd')].map(nd => ({
+      ref: Number(nd.getAttribute('ref'))
+    }));
+
+    const tags = [...w.querySelectorAll('tag')].map(t => ({
+      k: t.getAttribute('k'),
+      v: t.getAttribute('v')
+    }));
+
+    elements.push({
+      type: 'way',
+      id: Number(w.getAttribute('id')),
+      nodes: nds.map(n => n.ref),
+      tags
+    });
+  });
+
+  // 处理 <relation>
+  xml.querySelectorAll('relation').forEach(r => {
+    const members = [...r.querySelectorAll('member')].map(m => ({
+      type: m.getAttribute('type'),
+      ref: Number(m.getAttribute('ref')),
+      role: m.getAttribute('role')
+    }));
+
+    const tags = [...r.querySelectorAll('tag')].map(t => ({
+      k: t.getAttribute('k'),
+      v: t.getAttribute('v')
+    }));
+
+    elements.push({
+      type: 'relation',
+      id: Number(r.getAttribute('id')),
+      members,
+      tags
+    });
+  });
+
+  return { elements };
 }
 
 </script>
