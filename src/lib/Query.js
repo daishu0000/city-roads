@@ -30,6 +30,8 @@ export default class Query {
 
   static Subway = 'way[railway=subway]';
 
+  static IntercityRail = 'way[railway=rail]';
+
   static runFromOptions(loadOptions, progress) {
     return loadOptions.getQueryTemplate().then(boundedQuery => {
       let q = new Query(boundedQuery, progress);
