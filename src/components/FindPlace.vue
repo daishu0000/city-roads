@@ -19,6 +19,10 @@
         <input type="radio" name="wayFilter" value="buildings" class="settings-radio" v-model="selectedFilterKey">
         Buildings
       </label>
+      <label>
+        <input type="radio" name="wayFilter" value="subway" class="settings-radio" v-model="selectedFilterKey">
+        Subway
+      </label>
     </form>
   </div>
   </div>
@@ -166,6 +170,7 @@ export default {
     getSelectedWayFilter() {
       if (this.selectedFilterKey === 'main') return Query.RoadMain;
       if (this.selectedFilterKey === 'buildings') return Query.Building;
+      if (this.selectedFilterKey === 'subway') return Query.Subway;
       return Query.Road;
     },
 

@@ -28,6 +28,8 @@ export default class Query {
    */
   static RoadStrict = 'way[highway~"^(((motorway|trunk|primary|secondary|tertiary)(_link)?)|unclassified|residential|living_street|pedestrian|service|track)$"][area!=yes]';
 
+  static Subway = 'way[railway=subway]';
+
   static runFromOptions(loadOptions, progress) {
     return loadOptions.getQueryTemplate().then(boundedQuery => {
       let q = new Query(boundedQuery, progress);
