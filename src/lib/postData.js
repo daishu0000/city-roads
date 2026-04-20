@@ -2,8 +2,8 @@ import request from './request.js';
 import Progress from './Progress.js';
 
 let backends = [
-  'https://overpass.private.coffee/api/',
-  'https://overpass-api.de/api/interpreter'
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter'
 ]
 
 export default function postData(data, progress) {
