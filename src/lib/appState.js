@@ -1,4 +1,5 @@
 import createQueryState from 'query-state';
+import config from '../config.js';
 
 const queryState = createQueryState({}, {useSearch: true});
 
@@ -8,7 +9,12 @@ const queryState = createQueryState({}, {useSearch: true});
  */
 export default {
   isCacheEnabled() {
-    return queryState.get('cache') != 0;
+    const cacheFromQuery = queryState.get('cache');
+    if (cacheFromQuery !== undefined && cacheFromQuery !== null) {
+      return cacheFromQuery != 0;
+    }
+
+    return config.useAreaCache !== false;
   },
   enableCache() {
     return queryState.unset('cache');
